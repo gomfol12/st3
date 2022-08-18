@@ -2677,30 +2677,35 @@ xrdb_load(void)
 				colorname[i] = ret.addr;
 		}
 
-		XRESOURCE_LOAD_STRING("foreground", colorname[defaultfg]);
 		XRESOURCE_LOAD_STRING("background", colorname[defaultbg]);
-		XRESOURCE_LOAD_STRING("cursorColor", colorname[defaultcs])
-		else {
-		  // this looks confusing because we are chaining off of the if
-		  // in the macro. probably we should be wrapping everything blocks
-		  // so this isn't possible...
-		  defaultcs = defaultfg;
-		}
-		XRESOURCE_LOAD_STRING("reverse-cursor", colorname[defaultrcs])
-		else {
-		  // see above.
-		  defaultrcs = defaultbg;
-		}
-
-		XRESOURCE_LOAD_STRING("font", font);
+		XRESOURCE_LOAD_STRING("foreground", colorname[defaultfg]);
 		XRESOURCE_LOAD_STRING("termname", termname);
+		XRESOURCE_LOAD_STRING("shell", shell);
+        XRESOURCE_LOAD_FLOAT("alpha", alpha);
+		XRESOURCE_LOAD_STRING("selectionbg", colorname[selectionbg]);
+		XRESOURCE_LOAD_STRING("selectionfg", colorname[selectionfg]);
 
-		XRESOURCE_LOAD_INTEGER("blinktimeout", blinktimeout);
-		XRESOURCE_LOAD_INTEGER("bellvolume", bellvolume);
-		XRESOURCE_LOAD_INTEGER("borderpx", borderpx);
+		// XRESOURCE_LOAD_STRING("cursorColor", colorname[defaultcs])
+		// else {
+		//   // this looks confusing because we are chaining off of the if
+		//   // in the macro. probably we should be wrapping everything blocks
+		//   // so this isn't possible...
+		//   defaultcs = defaultfg;
+		// }
+		// XRESOURCE_LOAD_STRING("reverse-cursor", colorname[defaultrcs])
+		// else {
+		//   // see above.
+		//   defaultrcs = defaultbg;
+		// }
 
-		XRESOURCE_LOAD_FLOAT("cwscale", cwscale);
-		XRESOURCE_LOAD_FLOAT("chscale", chscale);
+		// XRESOURCE_LOAD_STRING("font", font);
+
+		// XRESOURCE_LOAD_INTEGER("blinktimeout", blinktimeout);
+		// XRESOURCE_LOAD_INTEGER("bellvolume", bellvolume);
+		// XRESOURCE_LOAD_INTEGER("borderpx", borderpx);
+
+		// XRESOURCE_LOAD_FLOAT("cwscale", cwscale);
+		// XRESOURCE_LOAD_FLOAT("chscale", chscale);
 	}
 	XFlush(dpy);
 }
