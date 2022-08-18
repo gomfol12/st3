@@ -42,6 +42,8 @@
 #define ISCONTROLC1(c)		(BETWEEN(c, 0x80, 0x9f))
 #define ISCONTROL(c)		(ISCONTROLC0(c) || ISCONTROLC1(c))
 #define ISDELIM(u)		(u && wcschr(worddelimiters, u))
+#define STRESCARGREST(n)	((n) == 0 ? strescseq.buf : strescseq.argp[(n)-1] + 1)
+#define STRESCARGJUST(n)	(*(strescseq.argp[n]) = '\0', STRESCARGREST(n))
 
 enum term_mode {
 	MODE_WRAP        = 1 << 0,
@@ -148,7 +150,7 @@ typedef struct {
 	char *buf;             /* allocated raw string */
 	size_t siz;            /* allocation size */
 	size_t len;            /* raw string length */
-	char *args[STR_ARG_SIZ];
+	char *argp[STR_ARG_SIZ]; /* pointers to the end of nth argument */
 	int narg;              /* nb of args */
 } STREscape;
 
@@ -1915,29 +1917,30 @@ strhandle(void)
 	int j, narg, par;
 
 	term.esc &= ~(ESC_STR_END|ESC_STR);
-	strparse();
-	par = (narg = strescseq.narg) ? atoi(strescseq.args[0]) : 0;
+	strescseq.buf[strescseq.len] = '\0';
 
 	switch (strescseq.type) {
 	case ']': /* OSC -- Operating System Command */
+		strparse();
+		par = (narg = strescseq.narg) ? atoi(STRESCARGJUST(0)) : 0;
 		switch (par) {
 		case 0:
 			if (narg > 1) {
-				xsettitle(strescseq.args[1], 0);
-				xseticontitle(strescseq.args[1]);
+				xsettitle(STRESCARGREST(1), 0);
+				xseticontitle(STRESCARGREST(1));
 			}
 			return;
 		case 1:
 			if (narg > 1)
-				xseticontitle(strescseq.args[1]);
+				xseticontitle(STRESCARGREST(1));
 			return;
 		case 2:
 			if (narg > 1)
-				xsettitle(strescseq.args[1], 0);
+				xsettitle(STRESCARGREST(1), 0);
 			return;
 		case 52:
 			if (narg > 2 && allowwindowops) {
-				dec = base64dec(strescseq.args[2]);
+				dec = base64dec(STRESCARGJUST(2));
 				if (dec) {
 					xsetsel(dec);
 					xclipcopy();
@@ -1950,7 +1953,7 @@ strhandle(void)
 			if (narg < 2)
 				break;
 
-			p = strescseq.args[1];
+			p = STRESCARGREST(1);
 
 			if (!strcmp(p, "?"))
 				osc_color_response(defaultfg, 10);
@@ -1963,7 +1966,7 @@ strhandle(void)
 			if (narg < 2)
 				break;
 
-			p = strescseq.args[1];
+			p = STRESCARGREST(1);
 
 			if (!strcmp(p, "?"))
 				osc_color_response(defaultbg, 11);
@@ -1976,7 +1979,7 @@ strhandle(void)
 			if (narg < 2)
 				break;
 
-			p = strescseq.args[1];
+			p = STRESCARGREST(1);
 
 			if (!strcmp(p, "?"))
 				osc_color_response(defaultcs, 12);
@@ -1988,10 +1991,10 @@ strhandle(void)
 		case 4: /* color set */
 			if (narg < 3)
 				break;
-			p = strescseq.args[2];
+			p = STRESCARGJUST(2);
 			/* FALLTHROUGH */
 		case 104: /* color reset */
-			j = (narg > 1) ? atoi(strescseq.args[1]) : -1;
+			j = (narg > 1) ? atoi(STRESCARGJUST(1)) : -1;
 
 			if (p && !strcmp(p, "?"))
 				osc4_color_response(j);
@@ -2011,7 +2014,7 @@ strhandle(void)
 		}
 		break;
 	case 'k': /* old title set compatibility */
-		xsettitle(strescseq.args[0], 0);
+		xsettitle(strescseq.buf, 0);
 		return;
 	case 'P': /* DCS -- Device Control String */
 	case '_': /* APC -- Application Program Command */
@@ -2030,18 +2033,17 @@ strparse(void)
 	char *p = strescseq.buf;
 
 	strescseq.narg = 0;
-	strescseq.buf[strescseq.len] = '\0';
 
 	if (*p == '\0')
 		return;
 
 	while (strescseq.narg < STR_ARG_SIZ) {
-		strescseq.args[strescseq.narg++] = p;
 		while ((c = *p) != ';' && c != '\0')
-			++p;
+			p++;
+		strescseq.argp[strescseq.narg++] = p;
 		if (c == '\0')
 			return;
-		*p++ = '\0';
+		p++;
 	}
 }
 
