@@ -5,10 +5,10 @@
  *
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
-static char *font = "monospace:pixelsize=16:antialias=true:autohint=true";
+static char *font = "monospace:pixelsize=32:antialias=true:autohint=true:dpi=190";
 /* Spare fonts */
 static char *font2[] = {
-    "Twemoji:pixelsize=13:antialias=true:autohint=true"
+    "Twemoji:pixelsize=26:antialias=true:autohint=true:dpi=190"
 };
 
 static int borderpx = 2;
