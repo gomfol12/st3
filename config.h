@@ -5,9 +5,10 @@
  *
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
-static char *font = "monospace:pixelsize=32:antialias=true:autohint=true:dpi=192";
+static char *font = "Iosevka:pixelsize=32:antialias=true:autohint=true:dpi=192";
 /* Spare fonts */
 static char *font2[] = {
+    "Symbols Nerd Font Mono:pixelsize=26:antialias=true:autohint=true:dpi=192",
     "Twemoji:pixelsize=26:antialias=true:autohint=true:dpi=192"
 };
 
@@ -225,8 +226,8 @@ static Shortcut shortcuts[] = {
 	{ ControlMask,          XK_Print,       toggleprinter,  {.i =  0} },
 	{ ShiftMask,            XK_Print,       printscreen,    {.i =  0} },
 	{ XK_ANY_MOD,           XK_Print,       printsel,       {.i =  0} },
-	{ TERMMOD,              XK_H,           zoom,           {.f = +1} },
-	{ TERMMOD,              XK_L,           zoom,           {.f = -1} },
+	{ TERMMOD,              XK_L,           zoom,           {.f = +1} },
+	{ TERMMOD,              XK_H,           zoom,           {.f = -1} },
 	{ TERMMOD,              XK_G,           zoomreset,      {.f =  0} },
 	{ TERMMOD,              XK_C,           clipcopy,       {.i =  0} },
 	{ TERMMOD,              XK_V,           clippaste,      {.i =  0} },
