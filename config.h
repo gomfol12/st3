@@ -5,7 +5,7 @@
  *
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
-static char *font = "Iosevka:pixelsize=32:antialias=true:autohint=true:dpi=192";
+static char *font = "Inconsolata Nerd Font:pixelsize=32:antialias=true:autohint=true:dpi=192";
 /* Spare fonts */
 static char *font2[] = {
     "Symbols Nerd Font Mono:pixelsize=26:antialias=true:autohint=true:dpi=192",
